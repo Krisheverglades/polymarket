@@ -1,0 +1,25 @@
+[Unit]
+Description=Polymarket Copy Trading Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=copytrader
+WorkingDirectory=/opt/polymarket-copytrader
+ExecStart=/opt/polymarket-copytrader/venv/bin/python main.py
+Restart=on-failure
+RestartSec=10
+# Restart, but don't hot-loop forever if something is fundamentally broken
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+# --- Hardening ---
+# Run as a dedicated non-root user with no other privileges.
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/polymarket-copytrader/logs /opt/polymarket-copytrader/KILL
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
